@@ -42,10 +42,14 @@ function [buffer] = pblib_generic_serialize_to_string(msg)
   descriptor = msg.descriptor_function();
   buffer = zeros([1 pblib_get_serialized_size(msg)], 'uint8');
   num_written = 0;
-  for i=1:length(descriptor.fields)
+  for i=1:size(descriptor.field_indeces_by_number)
     field = descriptor.fields(i);
-    if (get(msg.has_field, field.name) == 0)
-      continue;
+    if (isstruct(getfield(msg,field.name)))
+      if isempty(getfield(msg,field.name))
+        continue;
+      end
+    elseif (getfield(msg,field.name)==0)
+        continue
     end
     if (field.label == LABEL_REPEATED)
       if (field.options.packed)

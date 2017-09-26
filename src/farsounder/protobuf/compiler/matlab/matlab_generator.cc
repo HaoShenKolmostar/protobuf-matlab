@@ -487,7 +487,7 @@ void MatlabGenerator::PrintReadBody(Printer & printer,
                 "descriptor_function", descriptor_function);
   printer.Print("$name$ = pblib_generic_parse_from_string(buffer, descriptor, buffer_start, buffer_end);\n",
                 "name", name);
-  printer.Print("$name$.descriptor_function = @$descriptor_function$;\n",
+  printer.Print("$name$.descriptor_function = $descriptor_function$();\n",
                 "name", name, "descriptor_function", descriptor_function);
 }
 
@@ -599,9 +599,9 @@ string MatlabGenerator::MakeReadFunctionHandle(
     case MATLABTYPE_UINT64:
       return "@(x) typecast(x, 'uint64')";
     case MATLABTYPE_DOUBLE:
-      return "@(x) typecast(x, 'double')";
+      return "@(x) typecast(uint8(x), 'double')";
     case MATLABTYPE_SINGLE:
-      return "@(x) typecast(x, 'single')";
+      return "@(x) typecast(uint8(x), 'single')";
     case MATLABTYPE_STRING:
       return "@(x) char(x{1}(x{2} : x{3}))";
     case MATLABTYPE_BYTES:
