@@ -1,6 +1,41 @@
 import configparser
 from sys import argv
 
+class ParamEntity(object):
+    C_TYPES = ['int','char','float','double','uint8_t','size_t']
+
+    def __init__(self,index,str):
+        super(ParamEntity,self).__init__()
+        if str[0:4] == 'out ':
+            self.Type = str[4:]
+            self.Is_Out = True
+        else :
+            self.Type = str
+            self.Is_Out = False
+        self.InstanceName = '{}_{}'.format(self.Type.lower(),index)
+
+    def IsProtoType(self):
+        return not self.Type in self.C_TYPES
+
+    def CallDeclaration(self):
+        res = self.InstanceName
+        if self.IsProtoType():
+            res = '&' + res
+        return res
+
+    def MxType(self):
+        if self.IsProtoType:
+             return ''
+        map = {
+            'int':'mxINT32_CLASS',
+            'uint_8_t':'mxINT32_CLASS',
+            'size_t':'mxINT32_CLASS',
+            'char' :'mxINT8_CLASS',
+            'float' :'mxSINGLE_CLASS',
+            'double' :'mxDOUBLE_CLASS'
+        }
+        return map[self.Type]   
+
 class MexEntity(object):
     def __init__(self):
         super(MexEntity,self).__init__()
@@ -23,8 +58,10 @@ class MexEntity(object):
         self.__c_file.write('#include \"pb_decode.h\"\n')
         self.__c_file.write('#include \"pb.h\"\n')
         self.__c_file.write('#include \"mex.h\"\n')
-        self.__c_file.write('#include \"eph.pb.h\"\n')
-        self.__c_file.write('#include \"C_Funtions.h\"\n')
+        for proto in self.Protos:
+            self.__c_file.write('#include \"{}.pb.h\"\n'.format(proto))
+        for include in self.Includes:
+            self.__c_file.write('#include \"{}.h\"\n'.format(include))            
         self.__c_file.write('#define MAX_BUF_SIZE 10000\n')
         self.__c_file.write('\n')
 
@@ -32,7 +69,7 @@ class MexEntity(object):
         self.__c_file.write('void mexFunction(int nlhs,mxArray *plhs[], int nrhs,const mxArray *prhs[])           \n')
         self.__c_file.write('{\n')
         self.__c_file.write('    uint8_t *matrix;\n')
-        self.__c_file.write('    double *result;\n')
+        self.__c_file.write('    uint8_t *result;\n')
         self.__c_file.write('    uint8_t buf[MAX_BUF_SIZE];\n')
         self.__c_file.write('    int i;\n')
         self.__c_file.write('    mwSignedIndex matrix_n;\n')
@@ -40,34 +77,58 @@ class MexEntity(object):
         self.__c_file.write('    pb_ostream_t ostream;\n')
         self.__c_file.write('\n')
         for param in self.Params:
-            self.__c_file.write('    {} {} = {}_init_zero;\n'.format(param,self.__type_to_name(param),param))
+            if param.IsProtoType():
+                self.__c_file.write('    {} {} = {}_init_zero;\n'.format(param.Type,param.InstanceName,param.Type))
+            else :
+                self.__c_file.write('    {} * {};\n'.format(param.Type,param.InstanceName))                
         self.__c_file.write('\n')
-        for i in range(0,len(self.Params)-1):
-            self.__c_file.write('    matrix = mxGetPr(prhs[{}]);\n'.format(i))
-            self.__c_file.write('    matrix_n = (mwSignedIndex)mxGetN(prhs[{}]);\n'.format(i))
-            self.__c_file.write('    if(matrix_n!=0){\n')
-            self.__c_file.write('        memset(buf,0,MAX_BUF_SIZE);\n')
-            self.__c_file.write('        for (int i = 0; i < matrix_n; i++)\n')
-            self.__c_file.write('        {\n')
-            self.__c_file.write('            buf[i] = matrix[i];\n')
-            self.__c_file.write('        }\n')
-            self.__c_file.write('        istream = pb_istream_from_buffer(buf, sizeof(buf));\n')
-            self.__c_file.write('        pb_decode(&istream,{}_fields,&{});\n'.format(self.Params[i],self.__type_to_name(self.Params[i])))
-            self.__c_file.write('    }\n')
-            self.__c_file.write('\n')
-        self.__c_file.write('    {}(&{});\n'.format(self.Function,", &".join(self.__type_to_name(param) for param in self.Params)))
-        self.__c_file.write('\n')
-        out_param = self.Params[len(self.Params)-1]
-        self.__c_file.write('    memset(buf,0,MAX_BUF_SIZE);\n')
-        self.__c_file.write('    ostream = pb_ostream_from_buffer(buf, sizeof(buf));\n')
-        self.__c_file.write('    pb_encode(&ostream, {}_fields, &{});\n'.format(out_param,self.__type_to_name(out_param)))
-        self.__c_file.write('    plhs[0] = mxCreateDoubleMatrix(1, strlen(buf), mxREAL);\n')
-        self.__c_file.write('    result = mxGetPr(plhs[0]);\n')
-        self.__c_file.write('    for(i = 0 ; i<strlen(buf);i++){\n')
-        self.__c_file.write('        result[i] = *(buf+i);\n')
-        self.__c_file.write('    }\n')
-        self.__c_file.write('}\n')
+        in_count = 0
+        for param in self.Params:
+            if not param.Is_Out:
+                if param.IsProtoType():
+                    self.__c_file.write('    matrix = mxGetPr(prhs[{}]);\n'.format(in_count))
+                    self.__c_file.write('    matrix_n = (mwSignedIndex)mxGetN(prhs[{}]);\n'.format(in_count))
+                    self.__c_file.write('    if(matrix_n!=0){\n')
+                    self.__c_file.write('        memset(buf,0,MAX_BUF_SIZE);\n')
+                    self.__c_file.write('        for (int i = 0; i < matrix_n; i++)\n')
+                    self.__c_file.write('        {\n')
+                    self.__c_file.write('            buf[i] = matrix[i];\n')
+                    self.__c_file.write('        }\n')
+                    self.__c_file.write('        istream = pb_istream_from_buffer(buf, sizeof(buf));\n')
+                    self.__c_file.write('        pb_decode(&istream,{}_fields,&{});\n'.format(param.Type,param.InstanceName))
+                    self.__c_file.write('    }\n')
+                    self.__c_file.write('\n')
+                else :
+                    self.__c_file.write('    matrix = mxGetPr(prhs[{}]);\n'.format(in_count))
+                    self.__c_file.write('    matrix_n = (mwSignedIndex)mxGetN(prhs[{}]);\n'.format(in_count))
+                    self.__c_file.write('    {} = ({}*)malloc(sizeof({})*matrix_n);\n'.format(param.InstanceName,param.Type,param.Type))
+                    self.__c_file.write('    if(matrix_n!=0){\n')
+                    self.__c_file.write('        for (int i = 0; i < matrix_n; i++)\n')
+                    self.__c_file.write('        {\n')
+                    self.__c_file.write('            {}[i] = ((double*)matrix)[i];\n'.format(param.InstanceName))
+                    self.__c_file.write('        }\n')
+                    self.__c_file.write('    }\n')
+                    self.__c_file.write('\n')
+            in_count = in_count + 1
 
+        self.__c_file.write('    {}({});\n'.format(self.Function, ", ".join(   \
+            param.CallDeclaration() for param in self.Params)))
+        self.__c_file.write('\n')
+        out_count = 0;
+        for param in self.Params:
+            if param.Is_Out:
+                if param.IsProtoType():
+                    self.__c_file.write('    memset(buf,0,MAX_BUF_SIZE);\n')
+                    self.__c_file.write('    ostream = pb_ostream_from_buffer(buf, sizeof(buf));\n')
+                    self.__c_file.write('    pb_encode(&ostream, {}_fields, &{});\n'.format(param.Type,param.InstanceName))
+                    self.__c_file.write('    plhs[{}] = mxCreateNumericMatrix(1, ostream.bytes_written, mxUINT8_CLASS,0);\n'.format(out_count))
+                    self.__c_file.write('    result = mxGetPr(plhs[{}]);\n'.format(out_count))
+                    self.__c_file.write('    for(i = 0 ; i<ostream.bytes_written;i++){\n')
+                    self.__c_file.write('        result[i] = *(buf+i);\n')
+                    self.__c_file.write('    }\n')
+                    self.__c_file.write('}\n')
+                out_count = out_count + 1
+            
     def Print(self):
         self.__c_file =  open(self.MexName+'.c','wt+')
         self.__print_headers()
@@ -82,9 +143,9 @@ def ReadConfig(config_file):
         mex_entity = MexEntity()
         mex_entity.MexName = mex_name
         mex_entity.Function = parser.get(mex_name,"Function").strip()
-        mex_entity.Params = parser.get(mex_name,"Params").split(',')
-        for i in range(0,len(mex_entity.Params)):
-            mex_entity.Params[i] = mex_entity.Params[i].strip()
+        raw_params = parser.get(mex_name,"Params").split(',')
+        for i in range(0,len(raw_params)):
+            mex_entity.Params.append(ParamEntity(i,raw_params[i].strip()))
         mex_entity.Protos = parser.get(mex_name,"Protos").split(',')
         for proto in mex_entity.Protos:
             proto = proto.strip()
