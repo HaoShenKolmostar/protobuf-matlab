@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+message List_PositioningReceiverInfo{
+    repeated PositioningReceiverInfo items = 1;
+}
+
+message PositioningReceiverInfo{
+    PositioningPosvel pv = 1;
+    PositioningLatLonAlt lla = 2;
+    repeated double receiver_time = 3[packed = true];
+	double clock_drift = 4;
+}
+
+message PositioningLatLonAlt{
+	double lat = 1;
+	double lon = 2;
+	double alt = 3;
+}
+
+message PositioningPosvel{
+    double x = 1;
+    double y = 2;
+    double z = 3;
+    double vx = 4;
+    double vy = 5;
+    double vz = 6;
+}
+
+// syntax = "proto2";
+
+// message List_PositioningReceiverInfo{
+//     repeated PositioningReceiverInfo items = 1;
+// }
+
+// message PositioningReceiverInfo{
+//     optional PositioningPosvel pv = 1;
+//     optional PositioningLatLonAlt lla = 2;
+//     repeated double receiver_time = 3[packed = true];
+// 	optional double clock_drift = 4;
+// }
+
+// message PositioningLatLonAlt{
+// 	optional double lat = 1;
+// 	optional double lon = 2;
+// 	optional double alt = 3;
+// }
+
+// message PositioningPosvel{
+//     optional double x = 1;
+//     optional double y = 2;
+//     optional double z = 3;
+//     optional double vx = 4;
+//     optional double vy = 5;
+//     optional double vz = 6;
+// }

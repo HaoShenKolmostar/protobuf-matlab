@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+message List_GPS_EPHEMERIS{
+    repeated GPS_EPHEMERIS items = 1;
+}
+
+message GPS_EPHEMERIS {
+    int32 iodc = 1;
+    int32 iode2 = 3;
+    int32 iode3 = 4;
+    int32 ura = 5;
+    int32 flag = 6;
+    int32 health = 7;
+    int32 svid = 8;
+    int32 toe = 9;
+    int32 toc = 10;
+    int32 week = 11;
+    double M0 = 12;
+    double delta_n = 13;
+    double ecc = 14;
+    double sqrtA = 15;
+    double omega0 = 16;
+	double i0 = 17;
+	double w = 18;
+	double omega_dot = 19;	
+	double idot = 20;
+	double cuc = 21;	
+	double cus = 22;
+	double crc = 23;	
+	double crs = 24;
+	double cic = 25;
+	double cis = 26;
+	double tgd = 27;
+	double tgd2 = 28;
+	float af0 = 29;
+	float af1 = 30;
+    double af2 = 31;
+	double axis = 32;
+	double n = 33;
+	double root_ecc = 34;
+	double omega_t = 35;
+	double omega_delta = 36;
+	double Ek = 37;
+  }
+
+// syntax = "proto2";
+
+// message List_GPS_EPHEMERIS{
+//     repeated GPS_EPHEMERIS items = 1;
+// }
+
+// message GPS_EPHEMERIS {
+//     optional int32 iodc = 1;
+//     optional int32 iode2 = 3;
+//     optional int32 iode3 = 4;
+//     optional int32 ura = 5;
+//     optional int32 flag = 6;
+//     optional int32 health = 7;
+//     optional int32 svid = 8;
+//     optional int32 toe = 9;
+//     optional int32 toc = 10;
+//     optional int32 week = 11;
+//     optional double M0 = 12;
+//     optional double delta_n = 13;
+//     optional double ecc = 14;
+//     optional double sqrtA = 15;
+//     optional double omega0 = 16;
+// 	optional double i0 = 17;
+// 	optional double w = 18;
+// 	optional double omega_dot = 19;	
+// 	optional double idot = 20;
+// 	optional double cuc = 21;	
+// 	optional double cus = 22;
+// 	optional double crc = 23;	
+// 	optional double crs = 24;
+// 	optional double cic = 25;
+// 	optional double cis = 26;
+// 	optional double tgd = 27;
+// 	optional double tgd2 = 28;
+// 	optional float af0 = 29;
+// 	optional float af1 = 30;
+//  optional double af2 = 31;
+// 	optional double axis = 32;
+// 	optional double n = 33;
+// 	optional double root_ecc = 34;
+// 	optional double omega_t = 35;
+// 	optional double omega_delta = 36;
+// 	optional double Ek = 37;
+//   }

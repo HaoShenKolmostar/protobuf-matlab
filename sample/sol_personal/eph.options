@@ -1,0 +1,8 @@
+List_GPS_EPHEMERIS.items max_count : 100
+
+//ephemeris_entity.iode2 fixed_length:true max_size:1
+//ephemeris_entity.iode3 fixed_length:true max_size:1
+//ephemeris_entity.ura fixed_length:true max_size:1
+//ephemeris_entity.flag fixed_length:true max_size:1
+//ephemeris_entity.health fixed_length:true max_size:1
+//ephemeris_entity.svid fixed_length:true max_size:1

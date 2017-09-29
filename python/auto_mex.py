@@ -1,4 +1,5 @@
 import configparser
+import os
 from sys import argv
 
 class ParamEntity(object):
@@ -109,7 +110,7 @@ class MexEntity(object):
                     self.__c_file.write('        }\n')
                     self.__c_file.write('    }\n')
                     self.__c_file.write('\n')
-            in_count = in_count + 1
+                in_count = in_count + 1
 
         self.__c_file.write('    {}({});\n'.format(self.Function, ", ".join(   \
             param.CallDeclaration() for param in self.Params)))
@@ -126,11 +127,11 @@ class MexEntity(object):
                     self.__c_file.write('    for(i = 0 ; i<ostream.bytes_written;i++){\n')
                     self.__c_file.write('        result[i] = *(buf+i);\n')
                     self.__c_file.write('    }\n')
-                    self.__c_file.write('}\n')
                 out_count = out_count + 1
+        self.__c_file.write('}\n')
             
     def Print(self):
-        self.__c_file =  open(self.MexName+'.c','wt+')
+        self.__c_file =  open(os.path.dirname(argv[0]) + '/' + self.MexName+'.c','wt+')
         self.__print_headers()
         self.__print_function()
 
