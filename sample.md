@@ -1,4 +1,4 @@
-# sol_personal
+# Sample sol_personal
 
 如果你对Protobuf的使用还有疑问，请参阅Protobuf_Install.md和Protobuf_Guide.md。
 
@@ -24,7 +24,10 @@ mv python/many_eph.c sample/sol_personal
 
 ## 编译成Mex文件
 
+请在Matlab里执行 mex -setup C 以验证能否正常使用Mex。如果出现问题的是2016或更低版本，请检查并修改文件 /Users/sol/Library/Application Support/MathWorks/MATLAB/R2016b/mex_C_maci64.xml ，并在配置文件中添加当前的MacOSX SDK信息
+
 ```matlab
+
 cd /your-path/protobuf-matlab/sample/sol_personal
 
 mex -output eph_to_pos eph_to_pos.c c_lib/C_Funtions.c proto_output/pos.pb.c proto_output/eph.pb.c c_lib/pb_common.c c_lib/pb_decode.c c_lib/pb_encode.c -v -Ic_lib -Iproto_output
@@ -34,7 +37,8 @@ mex -output many_eph many_eph.c c_lib/C_Funtions.c proto_output/pos.pb.c proto_o
 
 ## 调用Mex
 
-执行如下语句
+执行如下语句。不报错，并且不输出空的数据结构，则说明程序已经成果执行。
+
 ```matlab
 current_folder = pwd;addpath(genpath(current_folder));
 

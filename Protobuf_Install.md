@@ -1,13 +1,10 @@
-# 原项目信息
-protobuf-matlab - FarSounder's Protobuf compiler for Matlab
-Copyright 2011 FarSounder, Inc.
-http://code.google.com/p/protobuf-matlab/
-
 # 安装包含C和Matlab的Protobuf
 
-以下步骤并不是唯一可行的安装方案，也不是最方便呃，但是应该是最容易成功的，建议大家在了解以下安装思路的基础上，再进根据自己的实际情况进行适合自己的安装方式
+整个安装分为三部分：安装Protobuf本身，安装Farsounder Protobuf(Matlab版)，安装Nanopb(C版)。本项目只提供修改过的Farsounder代码。
 
-## 安装Protobuf
+以下步骤并不是唯一可行的安装方案，但是应该是最容易成功的，建议大家在了解以下安装思路的基础上，再进根据自己的实际情况进行适合自己的安装方式
+
+## 安装Protobuf本身
 
 请参考 https://github.com/Kolmostar/nanopb 中的步骤“安装Protobuf”部分，以完成对Protobuf本身的安装。下面这部分shell指令是对原文档的拷贝。
 
@@ -35,12 +32,12 @@ update_dyld_shared_cache
 ldconfig
 ```
 
-## 为 Protobuf 安装 Matlab插件
+## 安装Farsounder
 
 原项目地址https://github.com/farsounder/protobuf-matlab 
 本Repo中进行了一定的修改，请使用这个版本的代码
 
-我们的目标是将Matlab中的代码并入Protobuf中，一起进行编译生成与安装。
+我们的目标是将Farsounder中的代码并入Protobuf中，一起进行编译生成与安装。
 
 首先将本Repo中的'src'文件夹与Protobuf中的'src'文件夹进行合并。
 
@@ -80,7 +77,6 @@ libprotoc_la_SOURCES =                                         \
 
 ## 安装Nanopb
 
-原项目地址 https://github.com/nanopb/nanopb 。可以按照说明完成安装。可以参考 https://github.com/Kolmostar/nanopb 对安装Nanopb的说明。
+原项目地址 https://github.com/nanopb/nanopb 。按照说明即可完成安装。可以参考 https://github.com/Kolmostar/nanopb 对安装Nanopb的说明。
 
-除此正规方法之外，我还想为大家额外介绍一种取巧的办法。
-首先到 https://jpa.kapsi.fi/nanopb/download/ 下载可执行文件。解压后，会看到里面有一个generator-bin文件夹。这个文件夹里面的protoc是我们要运行nanopb所使用的，而非之前安装的那个protoc。请注意该文件夹下还有一个protoc.bin。使用命令"which protoc"，找到之前的Protoc安装的位置，用这个protoc可执行文件替换generator-bin中的protoc.bin文件即可。
+除正规方法之外，还想为大家额外介绍一种取巧的办法。首先到 https://jpa.kapsi.fi/nanopb/download/ 下载可执行文件。解压后，会看到里面有一个generator-bin文件夹。这个文件夹里面的protoc是我们要运行nanopb所使用的，而非之前安装的那个protoc。请注意该文件夹下还有一个protoc.bin。使用命令"which protoc"，找到之前的Protoc安装的位置，用这个protoc可执行文件替换generator-bin中的protoc.bin文件即可。
