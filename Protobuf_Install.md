@@ -39,9 +39,9 @@ ldconfig
 
 我们的目标是将Farsounder中的代码并入Protobuf中，一起进行编译生成与安装。
 
-首先将本Repo中的'src'文件夹与Protobuf中的'src'文件夹进行合并。
+首先将本Repo中的'src/farsounder'文件夹拷贝到Protobuf中的'src'文件夹下。
 
-接下来需要修改两个配置文件。一个是/src/google/Makefile.am 。需要添加两处内容
+接下来需要修改两个配置文件。一个是/src/Makefile.am 。需要添加两处内容
 
 ```shell
 #找到此处
