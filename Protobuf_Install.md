@@ -22,7 +22,9 @@ sudo apt install -y automake autoconf libtool make cmake g++
 brew install automake autoconf libtool cmake
 
 # 正式安装
+./autogen.sh
 ./configure
+make
 make check
 sudo make install
 
