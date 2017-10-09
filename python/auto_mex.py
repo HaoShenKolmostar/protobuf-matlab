@@ -13,6 +13,11 @@ class ParamEntity(object):
         else :
             self.Type = str
             self.Is_Out = False
+        if '*' in self.Type :
+            self.is_pointer = True
+            self.Type = self.Type.split('*')[0].strip()
+        else :
+            self.is_pointer = False
         self.InstanceName = '{}_{}'.format(self.Type.lower(),index)
 
     def IsProtoType(self):
@@ -22,6 +27,8 @@ class ParamEntity(object):
         res = self.InstanceName
         if self.IsProtoType():
             res = '&' + res
+        elif not self.is_pointer :
+            res = '*' + res
         return res
 
     def MxType(self):

@@ -9,10 +9,10 @@ void Reset_Pos(GPS_EPHEMERIS * GPS_EPHEMERIS,PositioningReceiverInfo * Positioni
 }
 
 
-void Many_Eph(int * eph_nums,List_GPS_EPHEMERIS *list2, float * f1,float * f2 ,char * c1,char * c2,List_GPS_EPHEMERIS *list){
-    list->items_count = *eph_nums;
-    list2->items_count = *eph_nums;
-    for ( int i = 0 ; i < *eph_nums ; i++){
+void Many_Eph(int eph_nums,List_GPS_EPHEMERIS *list2, float * f1,float * f2 ,char * c1,char * c2,List_GPS_EPHEMERIS *list){
+    list->items_count = eph_nums;
+    list2->items_count = eph_nums;
+    for ( int i = 0 ; i < eph_nums ; i++){
         list->items[i].af0 = f1[i];
         list->items[i].af1 = f2[i];
         list->items[i].iode2 = c1[i];

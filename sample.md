@@ -37,7 +37,7 @@ mex -output many_eph many_eph.c c_lib/C_Funtions.c proto_output/pos.pb.c proto_o
 
 ## 调用Mex
 
-执行如下语句。不报错，并且不输出空的数据结构，则说明程序已经成果执行。
+执行如下语句。不报错，并且不输出空的数据结构，则说明程序已经成功执行。
 
 ```matlab
 current_folder = pwd;addpath(genpath(current_folder));
