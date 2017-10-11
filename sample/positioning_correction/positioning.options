@@ -1,0 +1,19 @@
+PositioningNavMessage.eph_type1 max_count : 3  fixed_length:true
+PositioningNavMessage.eph_type2 max_count : 1  fixed_length:true
+PositioningNavMessage.alm max_count : 4  fixed_length:true
+
+PositioningReceiverInfo.receiver_time_integer_part max_count : 4  fixed_length:true
+PositioningReceiverInfo.receiver_time_fraction_part max_count : 4  fixed_length:true
+
+PositioningCachedPvaAndEa.sec_time max_count : 2  fixed_length:true
+PositioningCachedPvaAndEa.pva max_count : 2  fixed_length:true
+PositioningCachedPvaAndEa.ea max_count : 2  fixed_length:true
+
+PositioningHMatrix.sat_count max_count : 4  fixed_length:true
+PositioningHMatrix.value max_count : 40  fixed_length:true
+PositioningHMatrix.weight max_count : 10  fixed_length:true
+
+PositioningPvtBuffer.state_vector max_count : 8  fixed_length:true
+PositioningPvtBuffer.delta_msr max_count : 10  fixed_length:true
+PositioningPvtBuffer.temp_matrix max_count : 36  fixed_length:true
+PositioningPvtBuffer.temp_vector max_count : 8  fixed_length:true

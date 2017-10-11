@@ -1,0 +1,299 @@
+syntax = "proto3";
+
+message PositioningUtcTime{
+   int32 year = 1;
+   int32 month = 2;
+   int32 day = 3;
+   int32 hour = 4;
+   int32 minute = 5;
+   int32 second = 6;
+   int32 millisecond = 7;
+}
+ 
+ message PositioningPos{
+   double x = 1; 
+   double y = 2;
+   double z = 3;
+}
+ 
+ message PositioningPosVel{
+   PositioningPos p = 1;
+   double vx = 2;
+   double vy = 3;
+   double vz = 4;
+}
+ 
+ message PositioningPosVelAcc{
+   PositioningPosVel pv = 1;
+   double ax = 2;
+   double ay = 3;
+   double az = 4;
+}
+ 
+ message PositioningLatLonAlt{
+   double lat = 1;
+   double lon = 2;
+   double alt = 3;
+}
+ 
+ message PositioningEccentricAnomaly{
+   double Ek = 1;        // Eccentric anomaly.
+   double Ek_dot = 2;    // Rate of change of eccentric anomaly.
+}
+ 
+ enum PositioningSystem{
+   option allow_alias = true;
+   SYSTEM_GPS = 0;
+   SYSTEM_BDS = 1;
+   SYSTEM_GAL = 2;
+   SYSTEM_GLO = 3;
+   SYSTEM_COUNT = 4;
+   SYSTEM_USING_EPH_TYPE1_COUNT = 3;
+   SYSTEM_USING_EPH_TYPE2_COUNT = 1;
+}
+ 
+ enum PositioningCommonInfo{
+   option allow_alias = true;
+   PositioningCommonInfo_default = 0;
+   GPS_SV_COUNT = 32;
+   GPS_MIN_SVID = 1;
+   GPS_MAX_SVID = 32;
+ 
+   BDS_SV_COUNT = 35;
+   BDS_GEO_SV_COUNT = 5;
+   BDS_MIN_SVID = 41;
+   BDS_MAX_SVID = 75;
+   BDS_GEO_MAX_SVID = 45;
+ 
+   GAL_SV_COUNT = 30;
+   GAL_MIN_SVID = 81;
+   GAL_MAX_SVID = 110;
+ 
+   GLO_SV_COUNT = 26;
+   GLO_MIN_SVID = 131;
+   GLO_MAX_SVID = 156;
+}
+
+ // ephemeris for GPS; BDS; GAL; etc.
+ message PositioningEphemerisType1{
+   int32 flag = 1;     // zero; invalid; nonzero; valid.
+   int32 svid = 2;
+   int32 health = 3;
+   int32 ura = 4;
+   int32 week = 5;
+   int32 toe = 6;      // Reference time of almanac.
+   int32 toc = 7;      // Reference time of clock.
+   double sqrt_a = 8;    // Square root of semimajor axis.
+   double e = 9;         // Eccentricity.
+   double i0 = 10;        // Inclination angle at reference time.
+   double omega0 = 11;    // Longitude of the ascending node at weekly epoch.
+   double w = 12;         // Argument of perigee.
+   double M0 = 13;        // Mean anomaly at reference time.
+   double omega_dot = 14; // Rate of change of longitude of the ascending node.
+   double af0 = 15;
+   double af1 = 16;
+   // Derived data.
+   double a = 17;         // Semimajor axis.
+   double ae = 18;        // Semimajor axis multiplied by eccentricity.
+   double sqrt_1me2 = 19;
+   double n = 20;         // Mean motion.
+   double omega_temp = 21;
+   double delta_omega = 22;
+   // Ephemeris proprietary data.
+   double delta_n = 23;   // Mean motion correction.
+   double i_dot = 24;     // Rate of change of inclination angle.
+   double cuc = 25;       // Amplitude of cosine correction to argument of latitude.
+   double cus = 26;       // Amplitude of sine correction to argument of latitude.
+   double crc = 27;       // Amplitude of cosine correction to orbital radius.
+   double crs = 28;       // Amplitude of sine correction to orbital radius.
+   double cic = 29;       // Amplitude of cosine correction to inclination angle.
+   double cis = 30;       // Amplitude of sine correction to inclination angle.
+   double af2 = 31;
+   double tgd = 32;
+   double tgd2 = 33;
+}
+ 
+ // ephemeris for GLO; etc.
+ message PositioningEphemerisType2{
+   int32 flag = 1;     // zero; invalid; nonzero; valid.
+   int32 svid = 2;
+   int32 health = 3;
+   int32 reserved = 4;
+   int32 tb = 5;
+   double tau = 6;
+   double gamma = 7;
+   double x = 8; 
+   double y = 9;
+   double z = 10;     // Satellite position.
+   double vx = 11;
+   double vy = 12;
+   double vz = 13;  // Satellite velocity.
+   double ax = 14;
+   double ay = 15;
+   double az = 16;  // Satellite acceleration due to lunar-solar attraction.
+}
+ 
+ message PositioningAlmanac{
+   int32 flag = 1;     // zero; invalid; nonzero; valid.
+   int32 svid = 2;
+   int32 health = 3;
+   int32 flag2 = 4;
+   int32 week = 5;
+   int32 toa = 6;      // Reference time of almanac.
+   int32 reserved = 7;
+   double sqrt_a = 8;    // Square root of semimajor axis.
+   double e = 9;         // Eccentricity.
+   double i0 = 10;        // Inclination angle at reference time.
+   double omega0 = 11;    // Longitude of the ascending node at weekly epoch.
+   double w = 12;         // Argument of perigee.
+   double M0 = 13;        // Mean anomaly at reference time.
+   double omega_dot = 14; // Rate of change of longitude of the ascending node.
+   double af0 = 15;
+   double af1 = 16;
+   // Derived data.
+   double a = 17;         // Semimajor axis.
+   double ae = 18;        // Semimajor axis multiplied by eccentricity.
+   double n = 19;         // Mean motion.
+   double sqrt_1me2 = 20;
+   double omega_temp = 21;
+   double delta_omega = 22;
+}
+ 
+ enum PositioningIonoParamFlag{
+//    option allow_alias = false;
+   PositioningIonoParamFlag_default = 0;
+   IONO_PARAM_ALPHA0_VALID = 0x01;
+   IONO_PARAM_ALPHA1_VALID = 0x02;
+   IONO_PARAM_ALPHA2_VALID = 0x04;
+   IONO_PARAM_ALPHA3_VALID = 0x08;
+   IONO_PARAM_BETA0_VALID = 0x10;
+   IONO_PARAM_BETA1_VALID = 0x20;
+   IONO_PARAM_BETA2_VALID = 0x40;
+   IONO_PARAM_BETA3_VALID = 0x80;
+   IONO_PARAM_ALL_VALID = 0xFF;
+}
+ 
+ message PositioningIonoParam{
+   int32 flag = 1;     // See PositioningIonoParamFlag.
+   float alpha0 = 2;
+   float alpha1 = 3;
+   float alpha2 = 4;
+   float alpha3 = 5;
+   float beta0 = 6;
+   float beta1 = 7;
+   float beta2 = 8;
+   float beta3 = 9;
+}
+ 
+ enum PositioningUtcParamFlag{
+//    option allow_alias = false;
+   PositioningUtcParamFlag_default = 0;
+   UTC_PARAM_DELTA_TLS_VALID = 0x01;
+   UTC_PARAM_DELTA_TLSF_VALID = 0x02;
+   UTC_PARAM_DN_VALID = 0x04;
+   UTC_PARAM_WNT_VALID = 0x08;
+   UTC_PARAM_WNLSF_VALID = 0x10;
+   UTC_PARAM_TOT_VALID = 0x20;
+   UTC_PARAM_A0_VALID = 0x40;
+   UTC_PARAM_A1_VALID = 0x80;
+   UTC_PARAM_ALL_VALID = 0xFF;
+}
+ 
+ message PositioningUtcParam{
+   int32 flag = 1;     // See PositioningUtcParamFlag.
+   int32 delta_tLS = 2;
+   int32 delta_tLSF = 3;
+   int32 DN = 4;
+   uint32 WNt = 5;
+   uint32 WNLSF = 6;
+   uint32 tot = 7;
+   double A0 = 8;
+   double A1 = 9;
+}
+ 
+ message PositioningNavMessage{
+   repeated PositioningEphemerisType1 eph_type1 = 1;
+   repeated PositioningEphemerisType2 eph_type2 = 2;
+   repeated PositioningAlmanac alm = 3;
+   PositioningIonoParam iono_param = 4;
+   PositioningUtcParam utc_param = 5;
+}
+ 
+ enum PositioningTimeAccuracyType{
+//    option allow_alias = false;
+   FULL_TIME_IS_ACCURATE = 0;
+   SUB_20MS_TIME_IS_ACCURATE = 1;
+   SUB_1MS_TIME_IS_ACCURATE = 2;
+}
+ 
+ message PositioningReceiverInfo{
+   PositioningPosVel pv = 1;
+   PositioningLatLonAlt lla =2;
+   repeated int32 receiver_time_integer_part = 3;
+   repeated double receiver_time_fraction_part = 4;
+   double clock_drift = 5;
+}
+ 
+ // Cached informations for GPS; BDS; GAL; etc.
+ message PositioningCachedPvaAndEa{
+   int32 flag = 1;    // zero; not bind; nonzero; bind.
+   int32 svid = 2;
+   uint32 reserved = 3;
+   int32 toe = 4;
+   repeated int32 sec_time = 5;
+   repeated PositioningPosVelAcc pva = 6;
+   repeated PositioningEccentricAnomaly ea = 7;
+}
+ 
+ // Cached informations for GLO; etc.
+ message PositioningCachedPv{
+   int32 flag = 1;     // zero; not bind; nonzero; bind.
+   int32 svid = 2;
+   uint32 reserved = 3;
+   int32 tb = 4;
+   double sec_time = 5;
+   PositioningPosVel pv = 6;
+}
+ 
+ message PositioningMeasurement{
+   int32 sys = 1;
+   int32 svid = 2;
+   uint32 cn0 = 3;
+   int32 transmit_time_integer_part = 4;
+   double transmit_time_fraction_part = 5;
+   double doppler = 6;
+}
+ 
+ message PositioningElAz{
+   double el = 1;        // Elevation.
+   double az = 2;        // Azimuth.
+}
+ 
+ message PositioningSatInfo{
+   double sat_clock_err = 1;
+   PositioningPosVel pv = 2;
+   double Ek = 3;
+   PositioningElAz el_az = 4;
+   double pseudo_range_corr = 5;
+ }
+ 
+ message PositioningHMatrix{
+   repeated uint32 sat_count = 1;
+   repeated double value = 2; // x; y; z; coarse-time.
+   repeated double weight = 3;
+}
+ 
+ // Since there are maximum 4 + SYSTEM_COUNT unknown variables
+ // which are x; y; z; coarse-time and time for each system;
+ // the vector size should be 4 + SYSTEM_COUNT and the matrix size
+ // should be (4 + SYSTEM_COUNT) * (4 + SYSTEM_COUNT).
+ // Since the matrix HtWH is a symmetric matrix; size
+ // (SYSTEM_COUNT + 4) * (SYSTEM_COUNT + 5) / 2 is enough to store the matrix.
+ message PositioningPvtBuffer{
+   repeated double state_vector = 1;
+   PositioningHMatrix h_matrix = 2;
+   repeated double delta_msr = 3;
+   repeated double temp_matrix = 4;
+   repeated double temp_vector = 5;
+}
+

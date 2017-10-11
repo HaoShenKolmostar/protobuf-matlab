@@ -71,3 +71,55 @@ eph_many.items(3)
 res
 ```
 
+
+# Sample positioning_correction
+
+命令行
+```shell
+mkdir sample/positioning_correction/matlab_lib
+sudo cp -r  protobuflib/* sample/positioning_correction/matlab_lib
+python3 python/auto_mex.py sample/positioning_correction/positioning.conf
+mv python/PositioningRelativisticCorr.c sample/positioning_correction
+mv python/PositioningGpsIonoDelay.c sample/positioning_correction
+mv python/PositioningBdsIonoDelay.c sample/positioning_correction
+mv python/PositioningIonoDelay.c sample/positioning_correction
+mv python/PositioningTropoDelay.c sample/positioning_correction
+```
+
+Matlab
+
+```matlab
+cd /your-path/protobuf-matlab/sample/positioning_correction
+mex -output PositioningBdsIonoDelay PositioningBdsIonoDelay.c c_code/positioning_correction.c c_code/positioning.pb.c c_lib/pb_common.c c_lib/pb_decode.c c_lib/pb_encode.c -v -Ic_lib -Ic_code;
+mex -output PositioningGpsIonoDelay PositioningGpsIonoDelay.c c_code/positioning_correction.c c_code/positioning.pb.c c_lib/pb_common.c c_lib/pb_decode.c c_lib/pb_encode.c -v -Ic_lib -Ic_code;
+mex -output PositioningIonoDelay PositioningIonoDelay.c c_code/positioning_correction.c c_code/positioning.pb.c c_lib/pb_common.c c_lib/pb_decode.c c_lib/pb_encode.c -v -Ic_lib -Ic_code;
+mex -output PositioningRelativisticCorr PositioningRelativisticCorr.c c_code/positioning_correction.c c_code/positioning.pb.c c_lib/pb_common.c c_lib/pb_decode.c c_lib/pb_encode.c -v -Ic_lib -Ic_code;
+mex -output PositioningTropoDelay PositioningTropoDelay.c c_code/positioning_correction.c c_code/positioning.pb.c c_lib/pb_common.c c_lib/pb_decode.c c_lib/pb_encode.c -v -Ic_lib -Ic_code;
+
+param1 = pb_read_PositioningIonoParam([])
+param1.flag = 255
+param1.alpha0 = 9.3132257E-09;
+param1.alpha1 = 1.4901161E-08;
+param1.alpha2 = -5.9604645E-08;
+param1.alpha3 = -1.1920929E-07;
+param1.beta0 = 8.8064000E+04j
+param1.beta0 = 8.8064000E+04;
+param1.beta1 = 4.9152000E+04;
+param1.beta2 = -1.3107200E+05;
+param1.beta3 = -3.2768000E+05;
+bparam1 = pblib_generic_serialize_to_string(param1)
+param2 = 294502008
+param3 = 294502008
+param2 = pb_read_PositioningLatLonAlt([])
+parma2.lat = 0.698203
+param2.lon = 2.029963
+param2.alt = 44.478356
+param2.lat = 0.698203
+param1
+bparam2 = pblib_generic_serialize_to_string(param2)
+param4 = pb_read_PositioningElAz([])
+param4.el = 1.195744
+param4.az = 0.426609
+bparam4 = pblib_generic_serialize_to_string(param4)
+PositioningGpsIonoDelay(bparam1,bparam2,param3,bparam4)
+ ```
