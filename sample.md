@@ -55,14 +55,19 @@ pos.lla.alt = 3.3
 pos.receiver_time = [4,5,6]
 eph_bytes = pblib_generic_serialize_to_string(eph)
 pos_bytes = pblib_generic_serialize_to_string(pos)
-pos_bytes = eph_to_pos(eph_bytes,pos_bytes)
+pos_bytes = eph_to_pos(eph_bytes,pos_bytes,[])
 pos_res = pb_read_PositioningLatLonAlt(pos_bytes)
 
 %测试代码2
-bytes_eph_many = many_eph(3,[1.1,2.2,3.3],[11.11,22.22,33.33],[6,7,8],[66,77,88])
-eph_many = pb_read_List_GPS_EPHEMERIS(bytes_eph_many)
+[bytes_1,bytes_2,res] = many_eph(3,[],[1.1,2.2,3.3],[11.11,22.22,33.33],[6,7,8],[66,77,88],[]);
+eph_many = pb_read_List_GPS_EPHEMERIS(bytes_1);
 eph_many.items(1)
 eph_many.items(2)
 eph_many.items(3)
+eph_many = pb_read_List_GPS_EPHEMERIS(bytes_2);
+eph_many.items(1)
+eph_many.items(2)
+eph_many.items(3)
+res
 ```
 
