@@ -74,6 +74,8 @@ res
 
 # Sample positioning_correction
 
+文件结构和上一个sample略有不同。特别将c_code文件夹单独提了出来，并且添加100%原汁原味的原始代码c_code_origin用来进行对比。两份代码的主要差异就在于，c_code_origin中数据结构全部放在positioning_type.h中，而c_code中将protobuf定义的数据结构移到了positioning.pb.h中。此外c_code文件夹中的数据定义将uint8_t和int16_t都换成了int32_t。具体使用指令见下
+
 命令行
 ```shell
 mkdir sample/positioning_correction/matlab_lib
